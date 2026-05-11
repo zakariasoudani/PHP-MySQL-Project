@@ -3,10 +3,11 @@ include('connect.php');
 $menu='client';
 include('menu.php');
 $page=isset($_GET['page']) ? $_GET['page']: 'list';
+
 if ($page=='ajouter_cl' && isset($_GET['nom'])&& $_GET['nom']!='' &&
  isset($_GET['ville'])&& $_GET['ville']!=''&& 
  isset($_GET['telephone'])&& $_GET['telephone']!=''&& 
- isset($_GET['email'])&& $_GET['email']!='') 
+ isset($_GET['email'])&& $_GET['email']!='')
  {
   $nom=$_GET['nom'];
   $ville=$_GET['ville'];
@@ -16,11 +17,10 @@ if ($page=='ajouter_cl' && isset($_GET['nom'])&& $_GET['nom']!='' &&
     VALUES ('$nom','$ville','$telephone','$email')";
   mysqli_query($connexion,$sql);
   header("location:client.php?page=ajouter_cl&status=success");
-  exit();
 }
-if ($page=='edit_cl'&& isset($_GET['id']) && $_GET['id']!='') {
-  $id=$_GET['id'];
-  $sql="SELECT * FROM clients WHERE id ='$id'";
+if ($page=='edit_cl'&& isset($_GET['id_ed']) && $_GET['id_ed']!='') {
+  $id_ed=$_GET['id_ed'];
+  $sql="SELECT * FROM clients WHERE id =$id_ed";
   $res=mysqli_query($connexion,$sql);
   $data=mysqli_fetch_array($res);
   $nom=$data['nom'];
@@ -33,12 +33,12 @@ if ($page=='edit_cl'&&
   isset($_GET['telephone_new']) && $_GET['telephone_new']!=''&&
   isset($_GET['email_new']) && $_GET['email_new']!=''&&
   isset($_GET['ville_new']) && $_GET['ville_new']!='') {
-  $id=$_GET['id'];
+  $id_ed=$_GET['id_ed'];
   $nom_new=$_GET['nom_new'];
   $ville_new=$_GET['ville_new'];
   $telephone_new=$_GET['telephone_new'];
   $email_new=$_GET['email_new'];
-  $sql="UPDATE clients SET nom='$nom_new' ,ville='$ville_new',telephone='$telephone_new',email='$email_new' WHERE id ='$id'";
+  $sql="UPDATE clients SET nom='$nom_new' ,ville='$ville_new',telephone='$telephone_new',email='$email_new' WHERE id ='$id_ed'";
   mysqli_query($connexion,$sql);
   header("location:client.php?page=list");
 }
@@ -82,7 +82,8 @@ if (isset($_GET['id_del']) && $_GET['id_del']!='') {
                 <td><?= $data['ville']; ?></td>
                 <td><?= $data['email']; ?></td>
                 <td><?= $data['telephone']; ?></td>
-                <td><a href="client.php?page=edit_cl_cl&id=<?= $data['id']; ?>" class="btn-mod">Edit</a>
+                <td>
+                <a href="client.php?page=edit_cl&id_ed=<?= $data['id'] ?>" class="btn-mod">Edit</a>
                 <a href="client.php?id_del=<?= $data['id']; ?>" class="btn-del">Supprimer</a>
                 <a href="commande.php?id=<?= $data['id']; ?>" class="btn-mod">Commande</a></td>
               </tr>
@@ -108,14 +109,16 @@ if (isset($_GET['id_del']) && $_GET['id_del']!='') {
               <a href="client.php" class="btn-add btn-add-c">Annuler</a>
           </form>
         </div>
-    </section>  <?php } elseif ($page=='edit_cl') { ?>
+    </section> 
+      <hr class="divider"/>
+     <?php } elseif ($page=='edit_cl') { ?>
   <section class="section">
       <div class="section-header">
           <div class="section-title"><span class="dot dot-c"></span> Nouveau Client</div>
       </div>
       <div class="form-card" style="max-width: 500px;">
           <form action="client.php" method="get">
-              <input type="hidden" name="id" value="<?= $id ?>">
+              <input type="hidden" name="id_ed" value="<?= $id_ed ?>">
               <input type="hidden" name="page" value="edit_cl">
               <label>Nom</label><input type="text" name="nom_new" value="<?= $nom ?>" required>
               <label>Ville</label><input type="text" name="ville_new" value="<?= $ville ?>" required>
