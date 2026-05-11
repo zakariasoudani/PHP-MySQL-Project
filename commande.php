@@ -23,15 +23,8 @@ isset($_GET['statut']) && $_GET['statut']!='') {
     mysqli_query($connexion,$sql);
     $id_new = mysqli_insert_id($connexion);
     header("location:commande_detail.php?client_id=$client_id&commande_id=$id_new");
-    exit();
 }
-if (isset($_GET['id_del'])&& $_GET['id_del']) {
-  $id_del=$_GET['id_del'];
-  $sql="DELETE FROM commandes WHERE id ='$id_del'";
-  mysqli_query($connexion,$sql);
-  header("location:commande.php?id=$client_id");
-  exit();
-}
+
 if ($page=='edit_cm'&& isset($_GET['id_cmd']) && $_GET['id_cmd']!='') {
   $id_cmd=$_GET['id_cmd'];
   $sql="SELECT * FROM commandes WHERE id ='$id_cmd'";
@@ -51,9 +44,15 @@ if ($page=='edit_cm' && isset($_GET['total_new'])) {
   $sql="UPDATE commandes SET total='$total_new' ,date_commande='$date_commande_new',statut='$statut_new' WHERE id ='$id_cmd'";
   mysqli_query($connexion,$sql);
   header("location:commande.php?id=$id_cl");
-  exit();
 }
-$menu = 'commande'; 
+if (isset($_GET['id_del'])&& $_GET['id_del']) {
+  $id_del=$_GET['id_del'];
+  $sql="DELETE FROM commandes WHERE id ='$id_del'";
+  mysqli_query($connexion,$sql);
+  header("location:commande.php?id=$client_id");
+}
+
+$menu = 'commande';
 include('menu.php');
 ?>
 <!DOCTYPE html>
@@ -69,7 +68,12 @@ include('menu.php');
   <?php if ($page=='list') {?>
     <section class="section">
       <div class="section-header">
-        <div class="section-title"><span class="dot dot-c"></span> Commandes</div>
+        <div class="section-title"><span class="dot dot-c"></span> Commandes <?php
+        $sql="SELECT * FROM clients WHERE id='$id'";
+$res=mysqli_query($connexion,$sql);
+$client=mysqli_fetch_array($res);
+echo $client['nom']; ?> </div>
+
         <a href="commande.php?page=ajouter_cm&id=<?= $id ?>" class="btn-add btn-add-c">＋ Ajouter commande</a>
       </div>
       <div class="table-wrap">
